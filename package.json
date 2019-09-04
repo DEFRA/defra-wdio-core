@@ -1,0 +1,33 @@
+{
+  "author": "alittlecross",
+  "dependencies": {
+    "@wdio/browserstack-service": "^5.12.1",
+    "@wdio/cli": "^5.12.1",
+    "@wdio/cucumber-framework": "^5.12.1",
+    "@wdio/junit-reporter": "^5.12.3",
+    "@wdio/local-runner": "^5.12.1",
+    "@wdio/mocha-framework": "^5.12.1",
+    "@wdio/selenium-standalone-service": "^5.12.1",
+    "@wdio/spec-reporter": "^5.12.1",
+    "commander": "^3.0.0",
+    "detect-libc": "^1.0.3",
+    "fibers": "^4.0.1",
+    "fs-extra": "^8.1.0",
+    "ordinal": "^1.0.3"
+  },
+  "description": "An acceptance test project initiator, keeping much of the WebDriver and WebdriverIO setup outside of the project.",
+  "devDependencies": {},
+  "homepage": "https://github.com/alittlecross/defra-wdio-core#readme",
+  "license": "MIT",
+  "main": "index.js",
+  "name": "defra-wdio-core",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alittlecross/defra-wdio-core.git"
+  },
+  "scripts": {
+    "install": "node ./bin",
+    "test": "nyc --reporter=text mocha --recursive"
+  },
+  "version": "0.0.1"
+}
