@@ -8,6 +8,8 @@ You must use Node.js version 10.x or above. Visit [Node.js](https://nodejs.org/e
 
 You must have the Java Development Kit installed. Visit [Oracle](https://www.oracle.com/technetwork/java/javase/downloads/jdk12-downloads-5295953.html) and choose the version for your system.
 
+**Note:** if prompted by your system to install JDK, do not install the version your system recommends; please follow the link above. 
+
 ## Getting Started
 
 In terminal, make a project folder:
@@ -56,18 +58,18 @@ I enter {string} in the text field *
 I enter {string} in the text area *
 ```
 
-When there are more than one element with the same text (e.g. 'I click the "3rd" "More info" link'):
+When there are more than one element with the same text (e.g. 'I click the 3rd "More info" link'):
 
 ```
-I click the {string} {string} link *
-I click the {string} {string} button *
-I select the {string} answer {string} *
-I select the {string} {string} option {string} *
-I enter {string} in the {string} email field *
-I enter {string} in the {string} password field *
-I enter {string} in the {string} search field *
-I enter {string} in the {string} text field *
-I enter {string} in the {string} text area *
+I click the {} {string} link *
+I click the {} {string} button *
+I select the {} answer {string} *
+I select the {} {string} option {string} *
+I enter {string} in the {} email field *
+I enter {string} in the {} password field *
+I enter {string} in the {} search field *
+I enter {string} in the {} text field *
+I enter {string} in the {} text area *
 ```
 
 Assertions (e.g. 'it has an "h1" element with the text "Welcome to GOV.UK"):
@@ -144,9 +146,9 @@ page.hasElement(type, text[, milliseconds])
 ```js
 page.get(type, content, index[, milliseconds, log])
 ```
-  - if found, this returns the element at the index argument from an array of elements matching the type and content arguments [with an optional argument to specify a delay before trying, and an optional argument to specify whether to console.log the count of the number of elements found]
+  - if found, this returns the element at the index argument from an array of elements matching the type and content arguments [with an optional argument to specify a delay before trying, and an optional argument to specify whether to output the count of the number of elements found to the console]
   
-  - by default, if more than one element is found, it console.logs the count before returning the element at the given index
+  - by default, if more than one element is found, it will output the count to the console before returning the element at the given index
 
   - if no elements are found, it saves a screenshot of the current browser window before throwing an error
   
