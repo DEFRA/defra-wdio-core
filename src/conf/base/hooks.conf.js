@@ -9,7 +9,7 @@ const hooks = {
 
   before: (capabilities, specs) => {
     if (!browser.capabilities.realMobile) browser.setWindowSize(1600, 1000)
-    infoMsg('Session Id: ', browser.sessionId)
+    infoMsg('Session Id', browser.sessionId)
   },
 
   beforeCommand: (commandName, args) => { },

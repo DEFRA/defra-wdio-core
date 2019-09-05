@@ -2,7 +2,7 @@
 
 const assert = require('assert')
 const ordinal = require('ordinal')
-const { infoMsg, warningMsg } = require('')
+const { infoMsg, warningMsg } = require('../js/messages')
 
 class Page {
   get (type, content, index, milliseconds = 0, log = true) {
@@ -31,7 +31,7 @@ class Page {
       throw error
     }
 
-    if (log && elements.length > 1) infoMsg(`Info: `, `${elements.length} elements ${t}${c}found`)
+    if (log && elements.length > 1) infoMsg(`Info`, `${elements.length} elements ${t}${c}found`)
 
     if (!elements[index]) {
       this.screenshot()
