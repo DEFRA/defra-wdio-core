@@ -22,7 +22,7 @@ Initialise a Node.js project in that folder:
 
 Install this package as a dependancy of that project:
 
-`npm install https://github.com/alittlecross/defra-wdio-core`
+`npm install https://github.com/DEFRA/defra-wdio-core`
 
 There should then be example tests ready to run using:
 
