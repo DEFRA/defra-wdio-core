@@ -39,3 +39,8 @@ const Page = require('./src/pages')
 
 module.exports.Page = Page
 module.exports.page = new Page()
+
+const { infoMsg, warningMsg } = require('./src/js/messages')
+
+module.exports.infoMsg = infoMsg
+module.exports.warningMsg = warningMsg

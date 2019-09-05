@@ -1,5 +1,7 @@
 'use strict'
 
+const { infoMsg, warningMsg } = require('defra-wdio-core')
+
 const hooks = {
 
   onPrepare: (config, capabilities) => { },
@@ -7,7 +9,7 @@ const hooks = {
 
   before: (capabilities, specs) => {
     if (!browser.capabilities.realMobile) browser.setWindowSize(1600, 1000)
-    console.log('Session Id: ' + browser.sessionId)
+    infoMsg('Session Id: ', browser.sessionId)
   },
 
   beforeCommand: (commandName, args) => { },
