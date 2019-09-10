@@ -1,6 +1,6 @@
 'use strict'
 
-const { infoMsg, warningMsg } = require('defra-wdio-core')
+const { infoMsg } = require('defra-wdio-core')
 
 const hooks = {
 

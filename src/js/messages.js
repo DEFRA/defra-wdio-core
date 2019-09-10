@@ -1,7 +1,7 @@
 'use strict'
 
-const blue = '\x1b[94m'
-const pink = '\x1b[95m'
+const blue = '\x1b[94;1m'
+const pink = '\x1b[95;1m'
 const reset = '\x1b[0m'
 
 module.exports.infoMsg = (prefix, content) => console.log(`${blue}${prefix}: ${reset}${content}`)
