@@ -1,51 +1,25 @@
 'use strict'
 
 const { defineStep } = require('cucumber')
-const Page = require('../../src/pages')
-const page = new Page()
+const Core = require('../../src/pages')
+const core = new Core()
 
-defineStep('I visit the url {string} *', text => page.visit(text))
+defineStep('I click the {string} button *', text => core.clickButton(text))
 
-defineStep('I click the {string} button *', text => page.clickButton(text))
+defineStep('I click the {string} link *', text => core.clickLink(text))
 
-defineStep('I click the {string} link *', text => page.clickLink(text))
+defineStep('I enter {string} in the {string} with the {string} of {string} *', (text, type, attribute, content) => core.enter(type, text, attribute, content))
 
-defineStep('I select the answer {string} *', text => page.selectAnswer(text))
+defineStep('I select the {string} option {string} *', (text, option) => core.selectByLabel(text, option))
 
-defineStep('I select the {string} option {string} *', (text, option) => page.selectOption(text, option))
+defineStep('I select the answer {string} *', text => core.clickLabel(text))
 
-defineStep('I select the dob {string} *', text => page.selectDob(text))
+defineStep('I select the dob {string} *', text => core.selectDob(text))
 
-defineStep('I enter {string} in the email field *', text => page.formField('email', text))
+defineStep('I visit the url {string} *', text => core.visit(text))
 
-defineStep('I enter {string} in the password field *', text => page.formField('password', text))
+defineStep('it has {string} on the page *', text => core.hasText(text))
 
-defineStep('I enter {string} in the search field *', text => page.formField('search', text))
+defineStep('it has a page title {string} *', text => core.hasTitle(text))
 
-defineStep('I enter {string} in the text field *', text => page.formField('text', text))
-
-defineStep('I enter {string} in the text area *', text => page.textArea(text))
-
-defineStep('I click the {} {string} link *', (index, text) => page.clickLink(text, parseInt(index) - 1))
-
-defineStep('I click the {} {string} button *', (index, text) => page.clickButton(text, parseInt(index) - 1))
-
-defineStep('I select the {} answer {string} *', (index, text) => page.selectAnswer(text, parseInt(index) - 1))
-
-defineStep('I select the {} {string} option {string} *', (index, text, option) => page.selectOption(text, option, parseInt(index) - 1))
-
-defineStep('I enter {string} in the {} email field *', (text, index) => page.formField('email', text, parseInt(index) - 1))
-
-defineStep('I enter {string} in the {} password field *', (text, index) => page.formField('password', text, parseInt(index) - 1))
-
-defineStep('I enter {string} in the {} search field *', (text, index) => page.formField('search', text, parseInt(index) - 1))
-
-defineStep('I enter {string} in the {} text field *', (text, index) => page.formField('text', text, parseInt(index) - 1))
-
-defineStep('I enter {string} in the {} text area *', (text, index) => page.textArea(text, parseInt(index) - 1))
-
-defineStep('it has a page title {string} *', text => page.hasTitle(text))
-
-defineStep('it has {string} on the page *', text => page.hasText(text))
-
-defineStep('it has a/an {string} element with text {string} *', (type, text) => page.hasElement(type, text))
+defineStep('it has a/an {string} element with text {string} *', (type, text) => core.hasElement(type, text))

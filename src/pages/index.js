@@ -4,104 +4,136 @@ const assert = require('assert')
 const ordinal = require('ordinal')
 const { infoMsg, warningMsg } = require('../js/messages')
 
-class Page {
-  get (type, content, index, milliseconds = 0, log = true) {
-    const t = type === '*' ? '' : `of type '${type}' `
-    const c = content ? `with content '${content}' ` : ''
-    const equalsContent = content ? '=' + content : ''
-
-    let elements
-
-    browser.pause(milliseconds)
-
-    const waitforTimeout = browser.options.waitforTimeout
-
-    try {
-      browser.waitUntil(() => {
-        const arr = $$(`${type}${equalsContent}`)
-
-        if (!arr.length) return false
-
-        elements = arr
-        return true
-      }, waitforTimeout, `Element ${t}${c}not found`)
-    } catch (error) {
-      this.screenshot()
-
-      throw error
-    }
-
-    if (log && elements.length > 1) infoMsg(`Info`, `${elements.length} elements ${t}${c}found`)
-
-    if (!elements[index]) {
-      this.screenshot()
-
-      throw new Error(`Could not find ${ordinal(index + 1)} ${t}`)
-    } else {
-      return elements[index]
-    }
-  }
-
-  set (type, text, index = 0) {
-    this.get(type, null, index).setValue(text)
+class Core {
+  attibutesBuilder (attributes) {
+    const a = []
+    for (let i = 0; i < attributes.length; i += 2) a.push(`[${attributes[i]}='${attributes[i + 1]}']`)
+    return a.join('')
   }
 
   screenshot (location = './logs/error-screenshots/', prefix = 'error') {
     const timestamp = new Date().toISOString().substring(0, 19)
-    browser.saveScreenshot(`${location}${prefix}.${timestamp}.${browser.capabilities.browserName.toLowerCase()}.png`)
+    const browserName = browser.capabilities.browserName.toLowerCase()
+    browser.saveScreenshot(`${location}${prefix}.${timestamp}.${browserName}.png`)
   }
 
-  visit (text, milliseconds = 0) {
+  wait (milliseconds) {
     browser.pause(milliseconds)
+  }
+
+  get (attributes, text, milliseconds = 0, log = true, index = 0) {
+    this.wait(milliseconds)
+
+    const aText = `'${attributes}' `
+    const eText = !text ? '' : `=${text}`
+    const wText = !text ? '' : `with text '${text}' `
+    const waitforTimeout = browser.options.waitforTimeout
+
+    let a
+
+    try {
+      browser.waitUntil(() => {
+        a = $$(`${attributes}${eText}`)
+        return !!a.length
+      }, waitforTimeout, `${aText}${wText}not found.`)
+    } catch (error) {
+      this.screenshot()
+      throw error
+    }
+
+    if (log && a.length > 1) infoMsg(`Info`, `${a.length} ${aText}elements ${wText}found.`)
+
+    if (!a[index]) {
+      this.screenshot()
+      throw new Error(`Could not find ${ordinal(index + 1)} ${aText}${wText}`)
+    } else {
+      return a[index]
+    }
+  }
+
+  set (attributes, text) {
+    this.get(attributes, null).setValue(text)
+  }
+
+  enter (type, text, ...attributes) {
+    this.set(`${type}${this.attibutesBuilder(attributes)}`, text)
+  }
+
+  checkUrlChange (a, b, expectChange) {
+    if (expectChange && a === b) {
+      throw new Error('Url did not change.')
+    }
+    if (!expectChange && a !== b) {
+      throw new Error(`Url changed from '${a}' to '${b}'`)
+    }
+  }
+
+  visit (text, expectChange = true, milliseconds = 0) {
+    this.wait(milliseconds)
+
+    const a = browser.getUrl()
     browser.url(text)
+    const b = browser.getUrl()
+    this.checkUrlChange(a, b, expectChange)
+
+    if (text !== b) {
+      warningMsg('WARNING', `Url redirected from '${text}' to '${b}'`)
+    }
   }
 
-  clickButton (text, index = 0) {
-    this.get('button', text, index).click()
+  click (type, text, expectChange = false, ...attributes) {
+    const a = browser.getUrl()
+    this.get(`${type}${this.attibutesBuilder(attributes)}`, text).click()
+    const b = browser.getUrl()
+    this.checkUrlChange(a, b, expectChange)
   }
 
-  clickLink (text, index = 0) {
-    this.get('*', text, index).click()
+  clickButton (text, expectChange = true) {
+    this.click('button', text, expectChange)
   }
 
-  selectAnswer (text, index = 0) {
-    this.get('label', text, index).click()
+  clickLabel (text) {
+    this.click('label', text)
   }
 
-  selectOption (text, option, index = 0) {
-    this.get('label*', text, index).$('select').selectByVisibleText(option)
+  clickLink (text, expectChange = true) {
+    this.click('a', text, expectChange)
+  }
+
+  clickRadio (text) {
+    this.click('input[type="radio"]', text)
+  }
+
+  select (option, ...attributes) {
+    this.get(`select${this.attibutesBuilder(attributes)}`, null).selectByVisibleText(option)
+  }
+
+  selectByLabel (text, option) {
+    this.get('label*', text).$('select').selectByVisibleText(option)
   }
 
   selectDob (text) {
     const a = text.split(' ')
-    this.selectOption('Day', a[0])
-    this.selectOption('Month', a[1])
-    this.selectOption('Year', a[2])
-  }
-
-  formField (type, text, index = 0) {
-    this.set(`input[type=${type}]`, text, index)
-  }
-
-  textArea (text, index = 0) {
-    this.set('textarea', text, index)
+    this.selectByLabel('Day', a[0])
+    this.selectByLabel('Month', a[1])
+    this.selectByLabel('Year', a[2])
   }
 
   hasTitle (text, milliseconds = 500) {
-    const a = this.get('title', null, 0, milliseconds).getTitle()
+    const a = this.get('title', null, milliseconds).getTitle()
     assert.strictEqual(a, text)
   }
 
   hasText (text, milliseconds = 500) {
-    const a = this.get('*', null, 0, milliseconds, false).getHTML().includes(text)
+    const a = this.get('*', null, milliseconds, false).getHTML().includes(text)
     if (!a) this.screenshot()
-    assert.strictEqual(a, true, `Element with content '${text}' not found`)
+    assert.strictEqual(a, true, `Element with content '${text}' not found.`)
   }
 
-  hasElement (type, text, milliseconds = 500) {
-    const a = this.get(type, text, 0, milliseconds).getText()
+  hasElement (type, text, milliseconds = 500, ...attributes) {
+    const a = this.get(`${type}${this.attibutesBuilder(attributes)}`, text, milliseconds).getText()
     assert.strictEqual(a, text)
   }
 }
 
-module.exports = Page
+module.exports = Core
