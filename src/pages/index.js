@@ -5,10 +5,19 @@ const ordinal = require('ordinal')
 const { infoMsg, warningMsg } = require('../js/messages')
 
 class Core {
-  attibutesBuilder (attributes) {
+  _attibutesBuilder (attributes) {
     const a = []
     for (let i = 0; i < attributes.length; i += 2) a.push(`[${attributes[i]}='${attributes[i + 1]}']`)
     return a.join('')
+  }
+
+  _checkUrlChange (a, b, expectChange) {
+    if (expectChange && a === b) {
+      throw new Error('Url did not change.')
+    }
+    if (!expectChange && a !== b) {
+      throw new Error(`Url changed from '${a}' to '${b}'`)
+    }
   }
 
   screenshot (location = './logs/error-screenshots/', prefix = 'error') {
@@ -21,10 +30,10 @@ class Core {
     browser.pause(milliseconds)
   }
 
-  get (attributes, text, milliseconds = 0, log = true, index = 0) {
+  get (selector, text = null, milliseconds = 0, log = true, index = 0) {
     this.wait(milliseconds)
 
-    const aText = `'${attributes}' `
+    const sText = `'${selector}' `
     const eText = !text ? '' : `=${text}`
     const wText = !text ? '' : `with text '${text}' `
     const waitforTimeout = browser.options.waitforTimeout
@@ -33,39 +42,30 @@ class Core {
 
     try {
       browser.waitUntil(() => {
-        a = $$(`${attributes}${eText}`)
+        a = $$(`${selector}${eText}`)
         return !!a.length
-      }, waitforTimeout, `${aText}${wText}not found.`)
+      }, waitforTimeout, `${sText}${wText}not found.`)
     } catch (error) {
       this.screenshot()
       throw error
     }
 
-    if (log && a.length > 1) infoMsg(`Info`, `${a.length} ${aText}elements ${wText}found.`)
+    if (log && a.length > 1) infoMsg(`Info`, `${a.length} ${sText}elements ${wText}found.`)
 
     if (!a[index]) {
       this.screenshot()
-      throw new Error(`Could not find ${ordinal(index + 1)} ${aText}${wText}`)
+      throw new Error(`Could not find ${ordinal(index + 1)} ${sText}${wText}`)
     } else {
       return a[index]
     }
   }
 
-  set (attributes, text) {
-    this.get(attributes, null).setValue(text)
+  set (selector, text) {
+    this.get(selector).setValue(text)
   }
 
   enter (type, text, ...attributes) {
-    this.set(`${type}${this.attibutesBuilder(attributes)}`, text)
-  }
-
-  checkUrlChange (a, b, expectChange) {
-    if (expectChange && a === b) {
-      throw new Error('Url did not change.')
-    }
-    if (!expectChange && a !== b) {
-      throw new Error(`Url changed from '${a}' to '${b}'`)
-    }
+    this.set(`${type}${this._attibutesBuilder(attributes)}`, text)
   }
 
   visit (text, expectChange = true, milliseconds = 0) {
@@ -74,18 +74,18 @@ class Core {
     const a = browser.getUrl()
     browser.url(text)
     const b = browser.getUrl()
-    this.checkUrlChange(a, b, expectChange)
+    this._checkUrlChange(a, b, expectChange)
 
     if (text !== b) {
       warningMsg('WARNING', `Url redirected from '${text}' to '${b}'`)
     }
   }
 
-  click (type, text, expectChange = false, ...attributes) {
+  click (type, text = null, expectChange = false, ...attributes) {
     const a = browser.getUrl()
-    this.get(`${type}${this.attibutesBuilder(attributes)}`, text).click()
+    this.get(`${type}${this._attibutesBuilder(attributes)}`, text).click()
     const b = browser.getUrl()
-    this.checkUrlChange(a, b, expectChange)
+    this._checkUrlChange(a, b, expectChange)
   }
 
   clickButton (text, expectChange = true) {
@@ -100,12 +100,8 @@ class Core {
     this.click('a', text, expectChange)
   }
 
-  clickRadio (text) {
-    this.click('input[type="radio"]', text)
-  }
-
   select (option, ...attributes) {
-    this.get(`select${this.attibutesBuilder(attributes)}`, null).selectByVisibleText(option)
+    this.get(`select${this._attibutesBuilder(attributes)}`).selectByVisibleText(option)
   }
 
   selectByLabel (text, option) {
@@ -131,7 +127,7 @@ class Core {
   }
 
   hasElement (type, text, milliseconds = 500, ...attributes) {
-    const a = this.get(`${type}${this.attibutesBuilder(attributes)}`, text, milliseconds).getText()
+    const a = this.get(`${type}${this._attibutesBuilder(attributes)}`, text, milliseconds).getText()
     assert.strictEqual(a, text)
   }
 }

@@ -45,108 +45,111 @@ When using Cucumber, you can add `@tags` to the top of your feature files and re
 If using Cucumber, there are some Step Definitions included in the Core, simply write features using the following statements (e.g. 'I click the "Continue" button'):
 
 ```
-I visit the url {string} *
+
 I click the {string} button *
 I click the {string} link *
-I select the answer {string} *
+I enter {string} in the {string} with the {string} of {string} *
 I select the {string} option {string} *
+I select the answer {string} *
 I select the dob {string} *
-I enter {string} in the email field *
-I enter {string} in the password field *
-I enter {string} in the search field *
-I enter {string} in the text field *
-I enter {string} in the text area *
-```
-
-When there are more than one element with the same text (e.g. 'I click the 3rd "More info" link'):
-
-```
-I click the {} {string} link *
-I click the {} {string} button *
-I select the {} answer {string} *
-I select the {} {string} option {string} *
-I enter {string} in the {} email field *
-I enter {string} in the {} password field *
-I enter {string} in the {} search field *
-I enter {string} in the {} text field *
-I enter {string} in the {} text area *
+I visit the url {string} *
 ```
 
 Assertions (e.g. 'it has an "h1" element with the text "Welcome to GOV.UK"):
 
 ```
-it has a page title {string} *
 it has {string} on the page *
+it has a page title {string} *
 it has a/an {string} element with text {string} *
 ```
 
-When writing your own Step Definitions, or Specs in Mocha, you can access an instance of the `Page` class in the Core by requiring it:
+When writing your own Step Definitions, or Specs in Mocha, you can access an instance of the `Core` class from the Core by requiring it:
 
 ```js
-const { page } = require('defra-wdio-core')
+const { core } = require('defra-wdio-core')
 ```
 
 This provides access to the following functions:
 
 ```js
-page.visit(text[, milliseconds])
+core.visit(text[, expectChange, milliseconds])
 ```
- - visits a url [with an optional argument to specify a delay before trying]
+ - visits a url in the 'text' argument [with an optional 'expectChange' argument to specify whether a url change is expected, and an optional 'milliseconds' argument to specify a delay before visiting the url].
 
 ```js
-page.clickButton(text[, index])
+core.clickButton(text[, expectChange])
 ```
-  - clicks a button [with an optional argument to specify an index if more than one button exists with that text]
+  - clicks a button with the 'text' argument on it [with an optional 'expectChange' argument to specify whether a url change is expected].
 
 ```js
-page.clickLink(text[, index])
+core.clickLink(text[, expectChange])
 ```
-  - clicks a link [with an optional argument to specify an index if more than one link exists with that text]
+  - clicks a link with the 'text' argument on it [with an optional 'expectChange' argument to specify whether a url change is expected].
 
 ```js
-page.selectAnswer(text[, index])
+core.clickLabel(text)
 ```
-  - selects a radio button answer [with an optional argument to specify an index if more than one radio button answer exists with that text]
+  - clicks a label with the 'text' argument on it; can be used when a label wraps a radio input.
 
 ```js
-page.selectOption(text, option[, index])
+core.click(type[, text, expectChange, ...attributes])
 ```
-  - selects an option from a drop-down list [with an optional argument to specify an index if more than one drop-down list exists with that text]
+  - this can be used to click any element using a selector in the 'type' argument [with an optional 'text' argument that the element's text should equal, with an optional 'expectChange' argument to specify whether a url change is expected, and optional 'attributes' arguments; the 'attributes' arguments should be in pairs of attribute and corresponding value].
+
+  - examples:
+
+    - core.click('input[type='radio']', null, false, 'value', 'yes')
+    - core.click('a', 'More information', true)
 
 ```js
-page.selectDob(text)
+core.selectByLabel(text, option)
 ```
-  - selects each option when the date of birth section is made up of seperate 'Day' 'Month' and 'Year' drop-down lists; the format should be as they appear written in the drop-down lists, seperated by spaces (e.g. "1 January 1970")
+  - selects the 'option' argument from a drop-down list that is wrapped in a label with the 'text' argument on it.
 
 ```js
-page.formField(type, text[, index])
+core.select(option, ...attributes)
 ```
-  - enters the text argument in the form field of the type argument [with an optional argument to specify an index if more than one form field of that type exists]
+  - selects the 'option' argument from a drop-down list using pairs of attribute and corresponding values from the 'attributes' argument.
+
+  - example:
+
+    - core.select('September', 'name', 'response[month]')
 
 ```js
-page.textArea(text[, index])
+core.selectDob(text)
 ```
-  - enters the text argument in the text area [with an optional argument to specify an index if more than one text area exists]
+  - selects each option when the date of birth section is made up of seperate 'Day', 'Month', and 'Year' drop-down lists; the format should be as the options appear written in the drop-down list's, seperated by spaces (e.g. "1 January 1970").
 
 ```js
-page.hasTitle(text[, milliseconds])
+core.enter(type, text[, ...attributes])
 ```
-  - asserts that the page title matches the text argument [with an optional argument to specify a delay before trying]
+  - enters the 'text' argument in the input of the 'type' argument [with optional 'attributes' arguments; the 'attributes' arguments should be in pairs of attribute and corresponding value].
+
+  - examples:
+
+    - core.enter('textarea', 'Hello world!')
+    - core.enter('input[type='text']', '2 Temple Quay House', 'name', 'AddressLine1')
+    - core.enter('input[type='password']', 'Password123',)
 
 ```js
-page.hasText(text[, milliseconds])
+core.hasTitle(text[, milliseconds])
 ```
-  - asserts that the page contains an element that matches the text argument [with an optional argument to specify a delay before trying]
+  - asserts that the page title matches the text argument [with an optional 'milliseconds' argument to specify a delay before trying].
 
 ```js
-page.hasElement(type, text[, milliseconds])
+core.hasText(text[, milliseconds])
 ```
-  - asserts that the page contains an element of a specific type that matches the text argument [with an optional argument to specify a delay before trying]
+  - asserts that the page contains an element that matches the text argument [with an optional 'milliseconds' argument to specify a delay before trying].
 
 ```js
-page.get(type, content, index[, milliseconds, log])
+core.hasElement(type, text[, milliseconds, ...attributes])
 ```
-  - if found, this returns the element at the index argument from an array of elements matching the type and content arguments [with an optional argument to specify a delay before trying, and an optional argument to specify whether to output the count of the number of elements found to the console]
+  - asserts that the page contains an element of a specific type that matches the text argument [with an optional 'milliseconds' argument to specify a delay before trying, and and optional 'attributes' arguments; the 'attributes' arguments should be in pairs of attribute and corresponding value].
+
+```js
+core.get(selector[, text, milliseconds, log, index])
+```
+  - if found, this returns the element [at the optional 'index' argument from an array of elements] matching the 'selector' argument [with an optional 'text' argument that the element should contain, with an optional 'milliseconds' argument to specify a delay before trying, and an optional 'log' argument to specify whether to output the count of the number of elements found to the console]
   
   - by default, if more than one element is found, it will output the count to the console before returning the element at the given index
 
@@ -157,21 +160,30 @@ page.get(type, content, index[, milliseconds, log])
   - it will continue to look for matching elements for the length of 'waitforTimeout' (set in WDIO Options in the config)
 
 ```js
-page.set(type, text[, index])
+core.set(selector, text)
 ```
-  - gets a form element of the type argument and sets the value equal to the text argument [with an optional argument to specify an index if more than form element of that type exists]
+  - gets an element matching the 'selector' argument and sets the value equal to the 'text' argument
+
+  - example:
+
+    - core.set('input[type='text'][name='AddressLine1']', '2 Temple Quay House')
 
 ```js
-page.screenshot([location, prefix])
+core.screenshot([location, prefix])
 ```
   - saves a screenshot [with the optional argument to specify a location, and an optional argument to specify a prefex]
   
   - the default location is ./'logs/error-screenshots/', and the prefix 'error', the remainder of the filename being made up of a date and a timestamp, followed by the browser under test.
 
-You can also require the `Page` class itself and use it to create instances or extend your own classes:
+```js
+core.wait(milliseconds)
+```
+  - has the browser wait for the number of 'milliseconds' argument
+
+You can also require the `Core` class itself and use it to create instances or extend your own classes:
 
 ```js
-const { Page } = require('defra-wdio-core')
+const { Core } = require('defra-wdio-core')
 ```
 
 ## Logging
