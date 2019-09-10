@@ -188,13 +188,7 @@ These functions accept the same arguments:
 infoMsg(prefix, content) / warningMsg(prefix, content)
 ```
 
-The exact colour is dependent on your system settings however this:
-
-`infoMsg('Feature', 'Visit GOV.UK')`
-
-would output something like this:
-
-<p style="font-family:courier; font-size:16px"><span style="color:blue">Feature: </span> Visit GOV.UK</p>
+The exact colour is dependent on your system settings. Using this: `infoMsg('Feature', 'Visit GOV.UK')`, would output this: `Feature: Visit GOV.UK`, with `Feature:` in blue.
 
 ## Hooks
 
