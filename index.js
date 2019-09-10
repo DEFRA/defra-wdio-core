@@ -35,10 +35,10 @@ module.exports.cli = () => {
     .parse(process.argv)
 }
 
-const Page = require('./src/pages')
+const Core = require('./src/pages')
 
-module.exports.Page = Page
-module.exports.page = new Page()
+module.exports.Core = Core
+module.exports.core = new Core()
 
 const { infoMsg, warningMsg } = require('./src/js/messages')
 
