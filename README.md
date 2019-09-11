@@ -42,10 +42,9 @@ When using Cucumber, you can add `@tags` to the top of your feature files and re
 
 ## Writing Tests
 
-If using Cucumber, there are some Step Definitions included in the Core, simply write features using the following statements (e.g. 'I click the "Continue" button'):
+If using Cucumber, there are some Step Definitions included in the Core, simply write features using the following statements (e.g. 'I enter "Rick Sanchez" in the "input" with the "name" of "FullName"):
 
 ```
-
 I click the {string} button *
 I click the {string} link *
 I enter {string} in the {string} with the {string} of {string} *
@@ -63,7 +62,7 @@ it has a page title {string} *
 it has a/an {string} element with text {string} *
 ```
 
-When writing your own Step Definitions, or Specs in Mocha, you can access an instance of the `Core` class from the Core by requiring it:
+When writing your own Step Definitions, or Specs in Mocha, you can access an instance of the `Core` class, from the Core, by requiring it:
 
 ```js
 const { core } = require('defra-wdio-core')
@@ -72,29 +71,29 @@ const { core } = require('defra-wdio-core')
 This provides access to the following functions:
 
 ```js
-core.visit(text[, expectChange, milliseconds])
+core.visit(text[, expectUrlChange, milliseconds])
 ```
- - visits a url in the 'text' argument [with an optional 'expectChange' argument to specify whether a url change is expected, and an optional 'milliseconds' argument to specify a delay before visiting the url].
+ - this visits the url in the 'text' argument [with an optional 'expectUrlChange' argument to specify whether a url change is expected, and an optional 'milliseconds' argument to specify a delay before visiting the url].
 
 ```js
-core.clickButton(text[, expectChange])
+core.clickButton(text[, expectUrlChange])
 ```
-  - clicks a button with the 'text' argument on it [with an optional 'expectChange' argument to specify whether a url change is expected].
+  - this clicks a button with the 'text' argument on it [with an optional 'expectUrlChange' argument to specify whether a url change is expected].
 
 ```js
-core.clickLink(text[, expectChange])
+core.clickLink(text[, expectUrlChange])
 ```
-  - clicks a link with the 'text' argument on it [with an optional 'expectChange' argument to specify whether a url change is expected].
+  - this clicks a link with the 'text' argument on it [with an optional 'expectUrlChange' argument to specify whether a url change is expected].
 
 ```js
 core.clickLabel(text)
 ```
-  - clicks a label with the 'text' argument on it; can be used when a label wraps a radio input.
+  - this clicks a label with the 'text' argument on it; this can be used when a label wraps a radio input.
 
 ```js
-core.click(type[, text, expectChange, ...attributes])
+core.click(type[, text, expectUrlChange, ...attributes])
 ```
-  - this can be used to click any element using a selector in the 'type' argument [with an optional 'text' argument that the element's text should equal, with an optional 'expectChange' argument to specify whether a url change is expected, and optional 'attributes' arguments; the 'attributes' arguments should be in pairs of attribute and corresponding value].
+  - this clicks an element identified using the selector in the 'type' argument [with an optional 'text' argument that the element should contain, with an optional 'expectUrlChange' argument to specify whether a url change is expected, and optional 'attributes' arguments; the 'attributes' arguments should be in pairs of attribute and corresponding value].
 
   - examples:
 
@@ -104,12 +103,12 @@ core.click(type[, text, expectChange, ...attributes])
 ```js
 core.selectByLabel(text, option)
 ```
-  - selects the 'option' argument from a drop-down list that is wrapped in a label with the 'text' argument on it.
+  - this selects the 'option' argument from a drop-down list when it is wrapped in a label with the 'text' argument on it.
 
 ```js
 core.select(option, ...attributes)
 ```
-  - selects the 'option' argument from a drop-down list using pairs of attribute and corresponding values from the 'attributes' argument.
+  - this selects the 'option' argument from a drop-down list using pairs of attribute and corresponding values from the 'attributes' argument.
 
   - example:
 
@@ -118,12 +117,12 @@ core.select(option, ...attributes)
 ```js
 core.selectDob(text)
 ```
-  - selects each option when the date of birth section is made up of seperate 'Day', 'Month', and 'Year' drop-down lists; the format should be as the options appear written in the drop-down list's, seperated by spaces (e.g. "1 January 1970").
+  - this selects each option when the date of birth input is made up of seperate 'Day', 'Month', and 'Year' drop-down lists wrapped in corresponding label; the format should be as the options appear written in the drop-down list's, seperated by spaces (e.g. "1 January 1970").
 
 ```js
 core.enter(type, text[, ...attributes])
 ```
-  - enters the 'text' argument in the input of the 'type' argument [with optional 'attributes' arguments; the 'attributes' arguments should be in pairs of attribute and corresponding value].
+  - this enters the 'text' argument in the input of the 'type' argument [with optional 'attributes' arguments; the 'attributes' arguments should be in pairs of attribute and corresponding value].
 
   - examples:
 
@@ -134,17 +133,17 @@ core.enter(type, text[, ...attributes])
 ```js
 core.hasTitle(text[, milliseconds])
 ```
-  - asserts that the page title matches the text argument [with an optional 'milliseconds' argument to specify a delay before trying].
+  - this asserts that the page title matches the 'text' argument [with an optional 'milliseconds' argument to specify a delay before trying].
 
 ```js
 core.hasText(text[, milliseconds])
 ```
-  - asserts that the page contains an element that matches the text argument [with an optional 'milliseconds' argument to specify a delay before trying].
+  - this asserts that the page contains any element that matches the 'text' argument [with an optional 'milliseconds' argument to specify a delay before trying].
 
 ```js
 core.hasElement(type, text[, milliseconds, ...attributes])
 ```
-  - asserts that the page contains an element of a specific type that matches the text argument [with an optional 'milliseconds' argument to specify a delay before trying, and and optional 'attributes' arguments; the 'attributes' arguments should be in pairs of attribute and corresponding value].
+  - this asserts that the page contains an element matching the selector in the 'type' argument and containing the text in the 'text' argument [with an optional 'milliseconds' argument to specify a delay before trying, and and optional 'attributes' arguments; the 'attributes' arguments should be in pairs of attribute and corresponding value].
 
 ```js
 core.get(selector[, text, milliseconds, log, index])
@@ -162,7 +161,7 @@ core.get(selector[, text, milliseconds, log, index])
 ```js
 core.set(selector, text)
 ```
-  - gets an element matching the 'selector' argument and sets the value equal to the 'text' argument
+  - this gets an element matching the 'selector' argument and sets the value equal to the 'text' argument
 
   - example:
 
@@ -171,14 +170,14 @@ core.set(selector, text)
 ```js
 core.screenshot([location, prefix])
 ```
-  - saves a screenshot [with the optional argument to specify a location, and an optional argument to specify a prefex]
+  - this saves a screenshot [with the optional argument to specify a location, and an optional argument to specify a prefex]
   
   - the default location is ./'logs/error-screenshots/', and the prefix 'error', the remainder of the filename being made up of a date and a timestamp, followed by the browser under test.
 
 ```js
 core.wait(milliseconds)
 ```
-  - has the browser wait for the number of 'milliseconds' argument
+  - this has the browser wait for the number of 'milliseconds' argument
 
 You can also require the `Core` class itself and use it to create instances or extend your own classes:
 

@@ -11,11 +11,11 @@ class Core {
     return a.join('')
   }
 
-  _checkUrlChange (a, b, expectChange) {
-    if (expectChange && a === b) {
+  _checkUrlChange (a, b, expectUrlChange) {
+    if (expectUrlChange && a === b) {
       throw new Error('Url did not change.')
     }
-    if (!expectChange && a !== b) {
+    if (!expectUrlChange && a !== b) {
       throw new Error(`Url changed from '${a}' to '${b}'`)
     }
   }
@@ -68,36 +68,36 @@ class Core {
     this.set(`${type}${this._attibutesBuilder(attributes)}`, text)
   }
 
-  visit (text, expectChange = true, milliseconds = 0) {
+  visit (text, expectUrlChange = true, milliseconds = 0) {
     this.wait(milliseconds)
 
     const a = browser.getUrl()
     browser.url(text)
     const b = browser.getUrl()
-    this._checkUrlChange(a, b, expectChange)
+    this._checkUrlChange(a, b, expectUrlChange)
 
     if (text !== b) {
       warningMsg('WARNING', `Url redirected from '${text}' to '${b}'`)
     }
   }
 
-  click (type, text = null, expectChange = false, ...attributes) {
+  click (type, text = null, expectUrlChange = false, ...attributes) {
     const a = browser.getUrl()
     this.get(`${type}${this._attibutesBuilder(attributes)}`, text).click()
     const b = browser.getUrl()
-    this._checkUrlChange(a, b, expectChange)
+    this._checkUrlChange(a, b, expectUrlChange)
   }
 
-  clickButton (text, expectChange = true) {
-    this.click('button', text, expectChange)
+  clickButton (text, expectUrlChange = true) {
+    this.click('button', text, expectUrlChange)
   }
 
   clickLabel (text) {
     this.click('label', text)
   }
 
-  clickLink (text, expectChange = true) {
-    this.click('a', text, expectChange)
+  clickLink (text, expectUrlChange = true) {
+    this.click('a', text, expectUrlChange)
   }
 
   select (option, ...attributes) {
