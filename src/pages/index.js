@@ -35,10 +35,6 @@ class Core {
     }
   }
 
-  clear (type, ...attributes) {
-    this.get(`${type}${this._attibutesBuilder(attributes)}`).clearValue()
-  }
-
   checkUrl (url) {
     const waitforTimeout = browser.options.waitforTimeout
     let browserUrl
@@ -51,6 +47,10 @@ class Core {
       this.screenshot()
       throw error
     }
+  }
+
+  clear (type, ...attributes) {
+    this.get(`${type}${this._attibutesBuilder(attributes)}`).clearValue()
   }
 
   click (type, text = null, expectUrlChange = false, ...attributes) {
@@ -114,8 +114,8 @@ class Core {
     }
   }
 
-  hasElement (type, text, milliseconds = 500, ...attributes) {
-    const a = this.get(`${type}${this._attibutesBuilder(attributes)}`, null, milliseconds).getText()
+  hasElement (type, text = null, milliseconds = 500, ...attributes) {
+    const a = this.get(`${type}${this._attibutesBuilder(attributes)}`, text, milliseconds).getText()
     assert.strictEqual(a, text)
   }
 
@@ -130,14 +130,14 @@ class Core {
     assert.strictEqual(a, text)
   }
 
-  set (selector, text) {
-    this.get(selector).setValue(text)
-  }
-
-  screenshot (location = './logs/error-screenshots/', prefix = 'error') {
+  screenshot (prefix = 'error', location = './logs/error-screenshots/') {
     const timestamp = new Date().toISOString().substring(0, 19)
     const browserName = browser.capabilities.browserName.toLowerCase()
     browser.saveScreenshot(`${location}${prefix}.${timestamp}.${browserName}.png`)
+  }
+
+  set (selector, text) {
+    this.get(selector).setValue(text)
   }
 
   select (type, option, ...attributes) {
