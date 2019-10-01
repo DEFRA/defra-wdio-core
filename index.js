@@ -5,7 +5,7 @@ if (process.env.NODE_ENV == null) process.env.NODE_ENV = 'test'
 const commander = require('commander')
 
 const wdio = location => {
-  process.argv[2] = `./node_modules/defra-wdio-core/src/conf/${location}.conf`
+  process.argv[2] = `./node_modules/defra-wdio-core/src/conf/${location}.conf.js`
 
   if (process.argv[3]) process.argv.splice(3, 0, '--spec')
 
