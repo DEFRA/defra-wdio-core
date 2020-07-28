@@ -20,6 +20,11 @@ module.exports.cli = () => {
     })
 
   commander
+    .command('headless')
+    .action(() => {
+      wdio('headless')
+    })
+  commander
     .command('browserstack')
     .action(() => {
       wdio('browserstack')
